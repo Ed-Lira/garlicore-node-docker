@@ -58,7 +58,7 @@ ENV API_LIMIT_BLACKLIST_COUNT 0
 ENV API_LIMIT_BLACKLIST_INTERVAL 10800000
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=5 CMD curl -s "http://localhost:3001/{$API_ROUTE_PREFIX}/sync" | jq -r -e ".status==\"finished\""
-
+RUN chmod +x ./garlicore-node-entrypoint.sh
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./garlicore-node-entrypoint.sh"]
 
 VOLUME /root/garlicoin-node/data

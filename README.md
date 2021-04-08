@@ -1,13 +1,13 @@
-Litecore Node + Insight API + Insight UI in Docker
+Garlicore Node + Insight API + Insight UI in Docker
 =========
 
 To run **testnet** (the default):
 
-`docker run -d -p 3001:3001 -p 19335:19335 -v /root/garlicoin-node/testnet:/root/garlicoin-node/data --name garlicoin-testnet plark/garlicore-node`
+`docker run -d -p 3001:3001 -p 19335:19335 -v /root/garlicoin-node/testnet:/root/garlicoin-node/data --name garlicoin-testnet garlicwallet/garlicore-node`
 
 To run for **livenet**:
 
-`docker run -e GARLICOIN_LIVENET=1 -d -p 3001:3001 -p 9333:9333 -v /root/garlicoin-node/livenet:/root/garlicoin-node/data --name garlicoin-livenet plark/garlicore-node`
+`docker run -e GARLICOIN_LIVENET=1 -d -p 3001:3001 -p 9333:9333 -v /root/garlicoin-node/livenet:/root/garlicoin-node/data --name garlicoin-livenet garlicwallet/garlicore-node`
 
 
 Tip: Ports 9333 (livenet) and 19335 (testnet) are inbound for garlicoind. Exposing them is just recommended.
