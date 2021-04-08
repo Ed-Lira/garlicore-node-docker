@@ -3,18 +3,18 @@ Litecore Node + Insight API + Insight UI in Docker
 
 To run **testnet** (the default):
 
-`docker run -d -p 3001:3001 -p 19335:19335 -v /root/litecoin-node/testnet:/root/litecoin-node/data --name litecoin-testnet plark/litecore-node`
+`docker run -d -p 3001:3001 -p 19335:19335 -v /root/garlicoin-node/testnet:/root/garlicoin-node/data --name garlicoin-testnet plark/garlicore-node`
 
 To run for **livenet**:
 
-`docker run -e LITECOIN_LIVENET=1 -d -p 3001:3001 -p 9333:9333 -v /root/litecoin-node/livenet:/root/litecoin-node/data --name litecoin-livenet plark/litecore-node`
+`docker run -e GARLICOIN_LIVENET=1 -d -p 3001:3001 -p 9333:9333 -v /root/garlicoin-node/livenet:/root/garlicoin-node/data --name garlicoin-livenet plark/garlicore-node`
 
 
-Tip: Ports 9333 (livenet) and 19335 (testnet) are inbound for litecoind. Exposing them is just recommended.
+Tip: Ports 9333 (livenet) and 19335 (testnet) are inbound for garlicoind. Exposing them is just recommended.
 
 ### Environment variables
 
-- `LITECOIN_LIVENET` (default: 0) - Set 1 to enable livenet
+- `GARLICOIN_LIVENET` (default: 0) - Set 1 to enable livenet
 - `API_ROUTE_PREFIX` (default: api) - Set URL prefix for Insight API
 - `UI_ROUTE_PREFIX` (default: "") - Set URL prefix for Insight UI
 - `API_CACHE_ENABLE` (default: 1) - Enable/disable Insight API cache

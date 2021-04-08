@@ -17,28 +17,28 @@ RUN apt-get update && \
 
 EXPOSE 3001 9333 19335
 
-WORKDIR /root/litecoin-node
-COPY litecore-node ./
+WORKDIR /root/garlicoin-node
+COPY garlicore-node ./
 RUN npm config set package-lock false && \
   npm install && \
-  cat logo_insight_litecoin.patch | patch -p1 -d node_modules/insight-lite-ui
+  cat logo_insight_garlicoin.patch | patch -p1 -d node_modules/insight-grlc-ui
 
 RUN apt-get purge -y \
   g++ make python gcc && \
   apt-get autoclean && \
   apt-get autoremove -y && \
   rm -rf \
-  node_modules/litecore-node/test \
-  node_modules/litecore-node/bin/litecoin-*/bin/litecoin-qt \
-  node_modules/litecore-node/bin/litecoin-*/bin/test_litecoin \
-  node_modules/litecore-node/bin/litecoin-*.tar.gz \
+  node_modules/garlicore-node/test \
+  node_modules/garlicore-node/bin/garlicoin-*/bin/garlicoin-qt \
+  node_modules/garlicore-node/bin/garlicoin-*/bin/test_garlicoin \
+  node_modules/garlicore-node/bin/garlicoin-*.tar.gz \
   /dumb-init_*.deb \
   /root/.npm \
   /root/.node-gyp \
   /tmp/* \
   /var/lib/apt/lists/*
 
-ENV LITECOIN_LIVENET 0
+ENV GARLICOIN_LIVENET 0
 ENV API_ROUTE_PREFIX "api"
 ENV UI_ROUTE_PREFIX ""
 
@@ -59,6 +59,6 @@ ENV API_LIMIT_BLACKLIST_INTERVAL 10800000
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=5 CMD curl -s "http://localhost:3001/{$API_ROUTE_PREFIX}/sync" | jq -r -e ".status==\"finished\""
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--", "./litecore-node-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "./garlicore-node-entrypoint.sh"]
 
-VOLUME /root/litecoin-node/data
+VOLUME /root/garlicoin-node/data

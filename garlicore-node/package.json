@@ -1,0 +1,12 @@
+{
+  "description": "Garlicore Node + Insight API + Insight UI in Docker",
+  "repository": "https://github.com/Ed-Lira/garlicore-node-docker",
+  "license": "LGPL-3.0",
+  "readme": "README.md",
+  "dependencies": {
+    "garlicore-lib": "0.1.4",
+    "garlicore-node": "3.1.11",
+    "insight-grlc-api": "0.4.15",
+    "insight-grlc-ui": "0.4.6"
+  }
+}

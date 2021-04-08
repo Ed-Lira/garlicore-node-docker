@@ -1,24 +1,24 @@
 {
-  "network": "${LITECOIN_NETWORK_NAME}",
+  "network": "${GARLICOIN_NETWORK_NAME}",
   "port": 3001,
   "services": [
     "bitcoind",
-    "insight-lite-api",
-    "insight-lite-ui",
+    "insight-grlc-api",
+    "insight-grlc-ui",
     "web"
   ],
   "servicesConfig": {
     "bitcoind": {
       "spawn": {
         "datadir": "./data",
-        "exec": "./node_modules/.bin/litecoind"
+        "exec": "./node_modules/.bin/garlicoind"
       }
     },
-    "insight-lite-ui": {
+    "insight-grlc-ui": {
       "routePrefix": "${UI_ROUTE_PREFIX}",
       "apiPrefix": "${API_ROUTE_PREFIX}"
     },
-    "insight-lite-api": {
+    "insight-grlc-api": {
       "routePrefix": "${API_ROUTE_PREFIX}",
       "rateLimiterOptions": {
         "limit": ${API_LIMIT_COUNT},
