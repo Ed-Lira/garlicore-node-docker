@@ -5,8 +5,8 @@
   "readme": "README.md",
   "dependencies": {
     "garlicore-lib": "0.1.4",
-    "garlicore-node": "3.1.11",
+    "garlicore-node": "3.1.18",
     "insight-grlc-api": "0.4.15",
-    "insight-grlc-ui": "0.4.6"
+    "insight-grlc-ui": "0.4.19"
   }
 }
