@@ -1,4 +1,4 @@
-FROM node:4.8.7-slim
+FROM node:6.0.0-slim
 
 RUN apt-get update && \
   apt-get install -y \
