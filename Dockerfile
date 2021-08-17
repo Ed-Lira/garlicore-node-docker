@@ -1,9 +1,40 @@
+FROM ubuntu:xenial AS build_step
+
+RUN set -ex ; \
+    mkdir -p /garlicoin ; \
+    apt-get update -y    ; \
+     	apt-get install -yq \
+        git                 \
+        build-essential     \
+        libtool             \
+        autotools-dev       \
+        automake            \
+        pkg-config          \
+        libssl-dev          \
+        libevent-dev        \
+        bsdmainutils        \
+        libboost-all-dev    \
+        libzmq3-dev \
+		software-properties-common ; \ 
+	add-apt-repository ppa:bitcoin/bitcoin ; \ 
+	apt-get update ; \
+	apt-get install -yq libdb4.8-dev libdb4.8++-dev
+
+RUN git clone https://github.com/garlicoin-project/garlicoin.git
+
+RUN set -ex ; \
+	cd /garlicoin ; \
+	./autogen.sh ; \
+	./configure --with-gui=no --disable-tests --disable-gui-tests; \ 
+    make clean ; \
+	make
+
 FROM node:6.17.0-stretch-slim
 
 #Prepare apt-get
 RUN apt-get update
 
-#Install dependencies for node and Garlicoin
+#Install dependencies for node
 RUN apt-get install -y \
   g++ \
   gcc-6 \
@@ -25,59 +56,6 @@ RUN apt-get install -y \
   && \
   wget https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.2.1_amd64.deb && \
   dpkg -i dumb-init_*.deb
-
-#Garlicoin needs boost 1.58.0 which needs to be built from source and installed
-RUN mkdir -pv /tmp/boostinst && \
-  cd /tmp/boostinst/ && \
-  wget -c 'http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.bz2/download' && \
-  tar xf download && \
-  ls && \
-  cd boost_1_58_0/ && \
-  ./bootstrap.sh --help && \
-  ./bootstrap.sh --show-libraries && \
-  ./bootstrap.sh && \
-  checkinstall ./b2 install
-
-#Garlicoin needs berkeley-db 4.8 which needs to be built from source and installed
-RUN mkdir /tmp/berkeley && \
-  cd /tmp/berkeley/ && \
-  wget -c 'https://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz' && \
-  tar -zxvf db-4.8.30.NC.tar.gz && \
-  cd db-4.8.30.NC/ && \
-  sed -i 's/\(__atomic_compare_exchange\)/\1_db/' dbinc/atomic.h && \
-  cd build_unix/ && \
-  ../dist/configure --prefix=/usr \
-  --enable-compat185 \
-  --enable-dbm       \
-  --disable-static   \
-  --enable-cxx && \
-  make && \
-  make docdir=/usr/share/doc/db-4.8.30 install
-
-#Fix ownership of berkeley db library
-RUN chown -v -R root:root \
-  /usr/bin/db_* \
-  /usr/include/db_cxx.h \
-  /usr/lib/libdb*.so \
-  /usr/share/doc/db-4.8.30
-
-RUN TEMP_DEB="$(mktemp)" && \
-  wget -O "$TEMP_DEB" 'http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb' && \
-  dpkg -i "$TEMP_DEB" && \
-  rm -f "$TEMP_DEB"
-
-#Install libevent dependencies for Garlicoin
-RUN apt-get install -y libevent-pthreads-2.0-5 libevent-2.0-5
-
-#Install zeromq
-RUN wget http://download.zeromq.org/zeromq-4.0.5.tar.gz && \
-tar xvzf zeromq-4.0.5.tar.gz && \
-apt-get install -y libtool pkg-config build-essential autoconf automake uuid-dev && \
-cd zeromq-4.0.5 && \
-./configure && \
-make install && \
-ldconfig && \
-ldconfig -p | grep zmq
 
 #Expose Garlicoin ports
 EXPOSE 3001 9333 19335
@@ -134,19 +112,15 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./garlicore-node-entrypoint.sh"]
 
 RUN ls
 
-#Download Garlicoin-Core and symlink it to where garlicoin-node expects it to be
-# TODO: In the future this can be built from source. We're already doing a lot of work
-# to make sure all the needed dependencies are available.
-# The trade-off is an increase in the time to build this image. On the other hand 
-# it would make this image more suitable for development work on garlicoin-core. And allow for dev "end-user" updates of
-# the garlicoin-core version in lieu of regular releases.
-# Stretch goal: this can be made configurable, either just extracting a release or building a commit/branch/tag
-RUN mkdir ./garlicoin-core && \
-  wget -c https://github.com/garlicoin-project/Garlicoin/releases/download/v0.16.0.2-garlicore/garlicoin-0.16.0.2-x86_64-linux-gnu.tar.gz -O - | tar -xz -C ./garlicoin-core && \
-  chmod +x ./garlicoin-core/garlicoind && \
-  ln ./garlicoin-core/garlicoind ./node_modules/.bin/garlicoind
+COPY --from=build_step /garlicoin/src/garlicoin* /usr/local/bin/
+COPY --from=build_step /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
+COPY --from=build_step /usr/lib/libdb_cxx-4.8.so /usr/lib/libdb_cxx-4.8.so
+COPY --from=build_step /lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
+
+RUN ls /usr/local/bin/
+
+RUN ln /usr/local/bin/garlicoind ./node_modules/.bin/garlicoind
   
-RUN ls ./garlicoin-core
 RUN ls -l ./node_modules/.bin/garlicoind
 
 VOLUME /root/garlicoin-node/data
