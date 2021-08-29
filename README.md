@@ -3,14 +3,14 @@ Garlicore Node + Insight API + Insight UI in Docker
 
 To run **testnet** (the default):
 
-`docker run -d -p 3001:3001 -p 19335:19335 -v /root/garlicoin-node/testnet:/root/garlicoin-node/data --name garlicoin-testnet garlicwallet/garlicore-node`
+`docker run -d -p 3001:3001 -p 42075:42075 -v /root/garlicoin-node/testnet:/root/garlicoin-node/data --name garlicoin-testnet garlicore-node`
 
 To run for **livenet**:
 
-`docker run -e GARLICOIN_LIVENET=1 -d -p 3001:3001 -p 9333:9333 -v /root/garlicoin-node/livenet:/root/garlicoin-node/data --name garlicoin-livenet garlicwallet/garlicore-node`
+`docker run -e GARLICOIN_LIVENET=1 -d -p 3001:3001 -p 42069:42069 -v /root/garlicoin-node/livenet:/root/garlicoin-node/data --name garlicoin-livenet garlicore-node`
 
 
-Tip: Ports 9333 (livenet) and 19335 (testnet) are inbound for garlicoind. Exposing them is just recommended.
+Tip: Ports 42069 (livenet) and 42075 (testnet) are inbound for garlicoind. Exposing them is just recommended.
 
 ### Environment variables
 

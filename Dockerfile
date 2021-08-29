@@ -58,7 +58,7 @@ RUN apt-get install -y \
   dpkg -i dumb-init_*.deb
 
 #Expose Garlicoin ports
-EXPOSE 3001 9333 19335
+EXPOSE 3001 42069 42075
 
 #Install NPM dependencies and apply patch
 WORKDIR /root/garlicoin-node
